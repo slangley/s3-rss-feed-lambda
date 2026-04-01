@@ -111,6 +111,7 @@ def generate_rss(event, context):
         Key="rss.xml",
         Body=build_rss(episodes),
         ContentType="application/rss+xml; charset=utf-8",
+        CacheControl="max-age=900",
     )
 
     cf.create_invalidation(
