@@ -14,6 +14,7 @@ provider:
     FEED_LANGUAGE: ${env:FEED_LANGUAGE}
     FEED_DOMAIN: ${env:FEED_DOMAIN}
     FEED_IMAGE_URL: ${env:FEED_IMAGE_URL, ''}
+    FEED_CATEGORY: ${env:FEED_CATEGORY, 'Society & Culture'}
     CLOUDFRONT_DISTRIBUTION_ID: !Ref PodcastCloudFront
   iam:
     role:

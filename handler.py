@@ -16,6 +16,7 @@ FEED_EMAIL = os.environ["FEED_EMAIL"]
 FEED_LANGUAGE = os.environ["FEED_LANGUAGE"]
 FEED_DOMAIN = os.environ["FEED_DOMAIN"]
 FEED_IMAGE_URL = os.environ.get("FEED_IMAGE_URL", "")
+FEED_CATEGORY = os.environ.get("FEED_CATEGORY", "Society & Culture")
 CLOUDFRONT_DISTRIBUTION_ID = os.environ["CLOUDFRONT_DISTRIBUTION_ID"]
 
 _DATE_SLUG_RE = re.compile(r"^(.+)-(\d{4}-\d{2}-\d{2})\.mp3$")
@@ -44,16 +45,27 @@ def build_rss(episodes: list[dict]) -> bytes:
     rss = Element("rss", {
         "version": "2.0",
         "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
+        "xmlns:atom": "http://www.w3.org/2005/Atom",
     })
     ch = SubElement(rss, "channel")
 
     SubElement(ch, "title").text = FEED_TITLE
-    SubElement(ch, "link").text = f"https://{FEED_DOMAIN}/rss.xml"
+    SubElement(ch, "link").text = f"https://{FEED_DOMAIN}"
     SubElement(ch, "description").text = FEED_DESCRIPTION
     SubElement(ch, "language").text = FEED_LANGUAGE
     SubElement(ch, "lastBuildDate").text = format_datetime(datetime.now(tz=timezone.utc))
+
+    SubElement(ch, "atom:link", {
+        "href": f"https://{FEED_DOMAIN}/rss.xml",
+        "rel": "self",
+        "type": "application/rss+xml",
+    })
+
     SubElement(ch, "itunes:author").text = FEED_AUTHOR
+    SubElement(ch, "itunes:summary").text = FEED_DESCRIPTION
+    SubElement(ch, "itunes:type").text = "episodic"
     SubElement(ch, "itunes:explicit").text = "no"
+    SubElement(ch, "itunes:category", text=FEED_CATEGORY)
 
     owner = SubElement(ch, "itunes:owner")
     SubElement(owner, "itunes:name").text = FEED_AUTHOR
@@ -74,6 +86,8 @@ def build_rss(episodes: list[dict]) -> bytes:
             "type": "audio/mpeg",
         })
         SubElement(item, "itunes:author").text = FEED_AUTHOR
+        SubElement(item, "itunes:explicit").text = "no"
+        SubElement(item, "itunes:episodeType").text = "full"
 
     return b"<?xml version='1.0' encoding='UTF-8'?>\n" + tostring(rss, encoding="unicode").encode("utf-8")
 
