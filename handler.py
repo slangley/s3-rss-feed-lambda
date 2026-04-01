@@ -82,7 +82,7 @@ def generate_rss(event, context):
     paginator = s3.get_paginator("list_objects_v2")
     episodes = []
 
-    for page in paginator.paginate(Bucket=BUCKET):
+    for page in paginator.paginate(Bucket=BUCKET, Prefix="episodes/"):
         for obj in page.get("Contents", []):
             if not obj["Key"].endswith(".mp3"):
                 continue

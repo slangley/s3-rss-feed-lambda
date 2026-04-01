@@ -42,6 +42,7 @@ functions:
           bucket: !Ref PodcastBucket
           event: s3:ObjectCreated:*
           rules:
+            - prefix: episodes/
             - suffix: .mp3
           existing: true  # Bucket is defined in Resources below, not created by this event
 
