@@ -18,7 +18,7 @@ FEED_DOMAIN = os.environ["FEED_DOMAIN"]
 FEED_IMAGE_URL = os.environ.get("FEED_IMAGE_URL", "")
 CLOUDFRONT_DISTRIBUTION_ID = os.environ["CLOUDFRONT_DISTRIBUTION_ID"]
 
-_DATE_SLUG_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-(.+)\.mp3$")
+_DATE_SLUG_RE = re.compile(r"^(.+)-(\d{4}-\d{2}-\d{2})\.mp3$")
 
 
 def parse_episode(key: str, size: int) -> dict | None:
@@ -26,7 +26,7 @@ def parse_episode(key: str, size: int) -> dict | None:
     match = _DATE_SLUG_RE.match(filename)
     if not match:
         return None
-    date_str, title_slug = match.group(1), match.group(2)
+    title_slug, date_str = match.group(1), match.group(2)
     pub_date = datetime.strptime(date_str, "%Y-%m-%d").replace(
         hour=12, minute=0, tzinfo=timezone.utc
     )

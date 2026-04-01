@@ -37,6 +37,9 @@ functions:
     handler: handler.generate_rss
     timeout: 30
     memorySize: 256
+    url:
+      authorizer: none
+      cors: true
     events:
       - s3:
           bucket: !Ref PodcastBucket
@@ -164,6 +167,8 @@ resources:
   Outputs:
     FeedUrl:
       Value: !Sub 'https://${env:FEED_DOMAIN}/rss.xml'
+    LambdaUrl:
+      Value: !GetAtt GenerateRssLambdaFunctionUrl.FunctionUrl
     CloudFrontDomain:
       Value: !GetAtt PodcastCloudFront.DomainName
     BucketName:
